@@ -2,27 +2,38 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import useInfiniteScroll from '../hooks/useInfiniteScroll';
 import Loading from './Loading';
 
-type WithInfiniteScrollingProps<T, ItemType> = {
-  fetchData: (page: number, signal: AbortSignal) => Promise<T>;
-  renderItem: (
-    item: ItemType,
-    ref?: React.Ref<HTMLDivElement>
-  ) => React.ReactNode;
-  extractItems: (data: T) => ItemType[];
-  totalPages?: (data: T) => number;
+type WithInfiniteScrollingProps<TFetchResponse, TItem> = {
+  fetchData: (page: number, signal: AbortSignal) => Promise<TFetchResponse>;
+  renderItem: (item: TItem, ref?: React.Ref<HTMLDivElement>) => React.ReactNode;
+  extractItems: (data: TFetchResponse) => TItem[];
+  totalPages?: (data: TFetchResponse) => number;
 };
 
-function WithInfiniteScrolling<T, ItemType>({
+/**
+ * A higher-order component that provides infinite scrolling functionality.
+ * It fetches data from the server when the user scrolls to the bottom of the page.
+ * @param fetchData - A function that fetches data from the server.
+ * @param renderItem - A function that renders each item in the list.
+ * @param extractItems - A function that extracts items from the fetched data.
+ * @param totalPages - A function that returns the total number of pages of data.
+ * TFetchResponse is the fetch response from the fetchData function
+ * TItem is the type of the items in the array returned by extractItems
+ */
+
+function WithInfiniteScrolling<TFetchResponse, TItem>({
   fetchData,
   renderItem,
   extractItems,
   totalPages,
-}: WithInfiniteScrollingProps<T, ItemType>) {
+}: WithInfiniteScrollingProps<TFetchResponse, TItem>) {
   const [currentPage, setCurrentPage] = useState(1);
   const [hasUnfetchedData, setHasUnfetchedData] = useState(true);
-  const [fullData, setFullData] = useState<ItemType[]>([]);
+  const [fullData, setFullData] = useState<TItem[]>([]);
 
-  const { data, loading, error } = useInfiniteScroll<T>(fetchData, currentPage);
+  const { data, loading, error } = useInfiniteScroll<TFetchResponse>(
+    fetchData,
+    currentPage
+  );
 
   useEffect(() => {
     if (data) {
