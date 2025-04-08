@@ -35,6 +35,7 @@ function WithInfiniteScrolling<TFetchResponse, TItem>({
     currentPage
   );
 
+  // Keeps fullData updated and checks if there is more data to fetch
   useEffect(() => {
     if (data) {
       const items = extractItems(data);
@@ -46,6 +47,8 @@ function WithInfiniteScrolling<TFetchResponse, TItem>({
     }
   }, [data, currentPage, extractItems, totalPages]);
 
+  // Intersection Observer to detect when the last item is in view. Reinstantiates if loading is complete and
+  // kicks off new fetch if the observer is triggered by incrementing currentPage.
   const intersectionObserver = useRef<IntersectionObserver | null>(null);
   const lastItemRef = useCallback(
     (node: HTMLDivElement | null) => {
