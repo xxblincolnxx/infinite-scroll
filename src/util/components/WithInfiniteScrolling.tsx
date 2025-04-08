@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import useInfiniteScroll from '../hooks/useInfiniteScroll';
+import Loading from './Loading';
 
 type WithInfiniteScrollingProps<T, ItemType> = {
   fetchData: (page: number, signal: AbortSignal) => Promise<T>;
@@ -59,7 +60,7 @@ function WithInfiniteScrolling<T, ItemType>({
           ? renderItem(item, lastItemRef)
           : renderItem(item)
       )}
-      {loading && <p>Loading...</p>}
+      {loading && <Loading />}
       {error && <p>Error: {error}</p>}
       {!hasUnfetchedData && <p>No more data to load.</p>}
     </div>
