@@ -1,6 +1,6 @@
 import { getMovies } from '../api/TMDB';
 import { Movie, MovieResponse } from '../types';
-import WithInfiniteScrolling from './WithInfiniteScrolling';
+import WithInfiniteScrolling from './HOC/WithInfiniteScrolling';
 import ScrollItem from './ScrollItem';
 import { v4 as uuidv4 } from 'uuid';
 

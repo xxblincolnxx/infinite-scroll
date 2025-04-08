@@ -30,6 +30,9 @@ export default function useInfiniteScroll<T>(
     };
 
     fetchMoreData();
+    return () => {
+      abortController.abort();
+    };
   }, [fetchData, page]);
 
   return { data, loading, error };

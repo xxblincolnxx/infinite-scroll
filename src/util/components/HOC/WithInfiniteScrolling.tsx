@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import useInfiniteScroll from '../hooks/useInfiniteScroll';
-import Loading from './Loading';
+import useInfiniteScroll from '../../hooks/useInfiniteScroll';
+import Loading from '../Loading';
 
 type WithInfiniteScrollingProps<TFetchResponse, TItem> = {
   fetchData: (page: number, signal: AbortSignal) => Promise<TFetchResponse>;
