@@ -1,7 +1,9 @@
+import ScrollContainer from './util/components/ScrollContainer';
+
 function App() {
   return (
     <main>
-      <p className='bg-sky-200'>Hello World</p>
+      <ScrollContainer />
     </main>
   );
 }
