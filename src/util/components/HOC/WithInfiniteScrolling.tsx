@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import useInfiniteScroll from '../../hooks/useInfiniteScroll';
+import useInfiniteFetch from '../../hooks/useInfiniteFetch';
 import Loading from '../Loading';
 
 type WithInfiniteScrollingProps<TFetchResponse, TItem> = {
@@ -7,6 +7,7 @@ type WithInfiniteScrollingProps<TFetchResponse, TItem> = {
   renderItem: (item: TItem, ref?: React.Ref<HTMLDivElement>) => React.ReactNode;
   extractItems: (data: TFetchResponse) => TItem[];
   totalPages?: (data: TFetchResponse) => number;
+  shouldResetData?: boolean;
 };
 
 /**
@@ -25,15 +26,25 @@ function WithInfiniteScrolling<TFetchResponse, TItem>({
   renderItem,
   extractItems,
   totalPages,
+  shouldResetData = false,
 }: WithInfiniteScrollingProps<TFetchResponse, TItem>) {
   const [currentPage, setCurrentPage] = useState(1);
   const [hasUnfetchedData, setHasUnfetchedData] = useState(true);
   const [fullData, setFullData] = useState<TItem[]>([]);
 
-  const { data, loading, error } = useInfiniteScroll<TFetchResponse>(
+  const { data, loading, error } = useInfiniteFetch<TFetchResponse>(
     fetchData,
     currentPage
   );
+
+  // Reset fullData and currentPage when shouldResetData is true
+  useEffect(() => {
+    if (shouldResetData) {
+      setFullData([]);
+      setCurrentPage(1);
+      setHasUnfetchedData(true); // Reset hasUnfetchedData to allow fetching again
+    }
+  }, [shouldResetData]);
 
   // Keeps fullData updated and checks if there is more data to fetch
   useEffect(() => {

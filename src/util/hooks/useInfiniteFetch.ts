@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-export default function useInfiniteScroll<T>(
+export default function useInfiniteFetch<T>(
   fetchData: (page: number, signal: AbortSignal) => Promise<T>,
   page: number
 ) {
@@ -11,6 +11,7 @@ export default function useInfiniteScroll<T>(
   useEffect(() => {
     const abortController = new AbortController();
     const signal = abortController.signal;
+
     const fetchMoreData = async () => {
       setLoading(true);
       setError(null);
@@ -19,10 +20,8 @@ export default function useInfiniteScroll<T>(
         const result = await fetchData(page, signal);
         setData(result);
       } catch (err) {
-        if (err instanceof Error) {
+        if (err instanceof Error && err.name !== 'AbortError') {
           setError(err.message);
-        } else {
-          setError('An unknown error occurred');
         }
       } finally {
         setLoading(false);
